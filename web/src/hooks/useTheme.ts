@@ -2,7 +2,7 @@ import { useAppStore } from '@/store';
 import { computed, onMounted, watch } from 'vue';
 import * as Themes from '@/components/theme/type';
 import TinyThemeTool from '@opentiny/vue-theme/theme-tool.js';
-import { tinySmbTheme } from '@opentiny/vue-theme/theme';
+// import { tinySmbTheme } from '@opentiny/vue-theme/theme';
 import useThemes from './themes';
 
 export const useTheme = (themeTool: typeof TinyThemeTool) => {
@@ -13,17 +13,19 @@ export const useTheme = (themeTool: typeof TinyThemeTool) => {
       : 'DefaultTheme',
   );
   const { isDark } = useThemes();
-  watch(
-    themeName,
-    () => {
-      themeTool.changeTheme(
-        themeName.value === 'DefaultTheme'
-          ? tinySmbTheme
-          : (Themes as any)[themeName.value],
-      );
-    },
-    { immediate: true },
-  );
+
+  // watch(
+  //   themeName,
+  //   () => {
+  //     themeTool.changeTheme(
+  //       themeName.value === 'DefaultTheme'
+  //         ? tinySmbTheme
+  //         : (Themes as any)[themeName.value],
+  //     );
+  //   },
+  //   { immediate: true },
+  // );
+
   onMounted(() => {
     watch(
       isDark,
