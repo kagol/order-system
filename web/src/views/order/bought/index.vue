@@ -33,14 +33,14 @@
       </tiny-grid-column>
       <tiny-grid-column field="goodsAmount" title="商品金额" width="160px">
         <template #default="{ row }">
-          <tiny-statistic prefix="￥">{{ row.goodsAmount }}</tiny-statistic>
+          <tiny-statistic prefix="￥" :value="row.goodsAmount"></tiny-statistic>
           x{{ row.goodsQuantity }}
         </template>
       </tiny-grid-column>
       <tiny-grid-column field="disbursements" title="实付款" width="160px">
         <template #default="{ row }">
           <div class="flex">
-            <span class="inline-flex items-center w-[80px]">实付款</span><tiny-statistic prefix="￥">{{ row.disbursements }}</tiny-statistic>
+            <span class="inline-flex items-center w-[80px]">实付款</span><tiny-statistic prefix="￥" :value="row.disbursements"></tiny-statistic>
           </div>
           <tiny-tag>手机订单</tiny-tag>
         </template>
