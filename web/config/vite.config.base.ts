@@ -3,12 +3,14 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import svgLoader from 'vite-svg-loader';
+import tailwindcss from '@tailwindcss/vite';
 
 const config = {
   plugins: [
     vue(),
     vueJsx(),
     svgLoader({ svgoConfig: {} }),
+    tailwindcss(),
   ],
   build: {
     outDir: resolve(__dirname, '../dist'),
