@@ -73,7 +73,7 @@
 <script lang="ts" setup>
   import { inject, onMounted, watch } from 'vue';
   // eslint-disable-next-line import/extensions
-  import { tinySmbTheme } from '@opentiny/vue-theme/theme';
+  // import { tinySmbTheme } from '@opentiny/vue-theme/theme';
   import { IconYes } from '@opentiny/vue-icon';
   import { useAppStore } from '@/store';
   import {
@@ -156,7 +156,7 @@
         break;
       default:
         appStore.updateSettings({ theme: 'light' });
-        theme.changeTheme(tinySmbTheme);
+        // theme.changeTheme(tinySmbTheme);
         appStore.updateSettings({ themelist: 'default' });
     }
   };
@@ -183,7 +183,7 @@
       switch (newValue.themelist) {
         case 'default':
           appStore.updateSettings({ theme: 'light' });
-          theme.changeTheme(tinySmbTheme);
+          // theme.changeTheme(tinySmbTheme);
           break;
         case 'peaches':
           appStore.updateSettings({ theme: 'light' });
