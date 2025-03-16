@@ -126,7 +126,7 @@ export class AppModule implements OnModuleInit {
       menu: ['add', 'remove', 'update', 'query'],
       i18n: ['add', 'remove', 'update', 'query'],
       lang: ['add', 'remove', 'update', 'query'],
-      order: ['list', 'query', 'create', 'update']
+      order: ['list', 'query', 'create', 'update', 'remove']
     };
     const tasks = [];
     let permission;

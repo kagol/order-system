@@ -2,7 +2,7 @@ import { User } from '@app/models';
 import { Order } from '@app/models/order';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { And, Like, Or, Repository } from 'typeorm';
 import { CreateOrder } from './dto/create-order.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '../.generate/i18n.generated';
@@ -115,10 +115,23 @@ export class OrderService {
     async getOrderList(
         page: number,
         size: number,
+        filter?: string
     ) {
-        const total = await this.order.count();
+        const total = await this.order.count({
+            where: [
+                {
+                    isDel: false,
+                    name: filter ? Like(`%${filter}%`) : undefined,
+                },
+                {
+                    isDel: false,
+                    orderId: filter ? Like(`%${filter}%`) : undefined,
+                }
+            ]
+        });
+
         const items = await this.order.find({
-            skip: (page - 1) * size,
+            skip: (Math.max(page, 1) - 1) * size,
             take: size,
             select: {
                 name: true,
@@ -142,6 +155,16 @@ export class OrderService {
                     role: true
                 }
             },
+            where: [
+                {
+                    // isDel: false, // 如果不需要展示被删除的订单，请同时取消 160,164 两行注释
+                    name: filter ? Like(`%${filter}%`) : undefined,
+                },
+                {
+                    // isDel: false, // 如果不需要展示被删除的订单，请同时取消 160,164 两行注释
+                    orderId: filter ? Like(`%${filter}%`) : undefined,
+                }
+            ]
         })
         return {
             items,
