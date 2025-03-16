@@ -47,6 +47,9 @@ export type I18nTranslations = {
         "preview": {
             "reject-this-request": string;
         };
+        "order": {
+            "notFound": string;
+        };
     };
     "validation": {
         "NOT_EMPTY": string;

@@ -23,7 +23,7 @@ export class UserService {
     private roleRep: Repository<Role>,
     private readonly authService: AuthService,
     private readonly i18n: I18nService<I18nTranslations>
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto, isInit: boolean) {
     const {
@@ -119,8 +119,8 @@ export class UserService {
           role:
             role && role.length
               ? {
-                  id: In(role),
-                }
+                id: In(role),
+              }
               : undefined,
           email: email ? Like(email) : undefined,
         },

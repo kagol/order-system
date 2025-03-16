@@ -4,14 +4,17 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './role';
 import * as crypto from 'crypto';
+import { Order } from './order';
 
 export const encry = (value: string, salt: string) =>
   crypto.pbkdf2Sync(value, salt, 1000, 18, 'sha256').toString('hex');
@@ -29,6 +32,9 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable({ name: 'user_role' })
   role: Role[];
+  @OneToMany(() => Order, (order) => order.creator)
+  @JoinColumn()
+  order: Order[]
   @Column({ nullable: true })
   department: string;
   @Column({ nullable: true })

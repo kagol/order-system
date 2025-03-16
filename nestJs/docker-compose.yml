@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: order_sys
+      MYSQL_DATABASE: tiny-pro-example
     ports:
       - 3306:3306
   redis:

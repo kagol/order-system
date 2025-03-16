@@ -34,6 +34,8 @@ import {
 } from 'nestjs-i18n';
 import { MockModule } from './mock/mock.module';
 import { RejectRequestGuard } from './public/reject.guard';
+import { OrderModule } from './order/order.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { RejectRequestGuard } from './public/reject.guard';
       typesOutputPath: join(__dirname, '../src/.generate/i18n.generated.ts'),
     }),
     MockModule,
+    OrderModule,
   ],
   providers: [
     {
@@ -81,7 +84,7 @@ export class AppModule implements OnModuleInit {
     private menu: MenuService,
     private lang: I18LangService,
     private i18: I18Service
-  ) {}
+  ) { }
   async onModuleInit() {
     const ROOT = __dirname;
     const data = join(ROOT, 'data');
@@ -123,6 +126,7 @@ export class AppModule implements OnModuleInit {
       menu: ['add', 'remove', 'update', 'query'],
       i18n: ['add', 'remove', 'update', 'query'],
       lang: ['add', 'remove', 'update', 'query'],
+      order: ['list', 'query', 'create', 'update']
     };
     const tasks = [];
     let permission;
