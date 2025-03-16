@@ -68,10 +68,10 @@ import { OrderService } from './order/order.service';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: RejectRequestGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RejectRequestGuard,
+    // },
     {
       provide: APP_GUARD,
       useClass: PermissionGuard,
