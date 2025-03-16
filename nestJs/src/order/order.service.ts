@@ -139,6 +139,10 @@ export class OrderService {
             take: size,
             select: {
                 name: true,
+                desc: true,
+                img: true,
+                cost: true,
+                shopName: true,
                 id: true,
                 orderId: true,
                 createAt: true,
