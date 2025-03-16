@@ -1,11 +1,11 @@
 {
-  "common":{
+  "common": {
     "unauth": "UnAuth",
     "tokenError": "Token invalid",
     "tokenExpire": "Token expire",
     "forbidden": "Need `{permission}` permission, but you don't have it"
   },
-  "user":{
+  "user": {
     "oldPasswordError": "Old password error",
     "userExists": "User exists",
     "userNumberNull": "Currently the last user, deletion is prohibited"
@@ -15,11 +15,11 @@
     "notExists": "Not found role",
     "conflict": "There are users under the role, please clear them"
   },
-  "permission":{
+  "permission": {
     "exists": "Permission {name} exists",
     "notExists": "Not found permission"
   },
-  "menu":{
+  "menu": {
     "exists": "Menu {name} exists",
     "notExists": "Not found menu"
   },
@@ -29,15 +29,18 @@
     "notExistsCommon": "Not found",
     "DELETE_LANG_CONFLICT": "Please clear all language records under {name} first"
   },
-  "i18":{
+  "i18": {
     "exists": "I18n field exists",
     "notExists": "Not Found"
   },
-  "auth":{
+  "auth": {
     "userNotExists": "User not found",
     "passwordOrEmailError": "Password or email invalid"
   },
   "preview": {
     "reject-this-request": "The server rejected this request, and modification, addition, or deletion of data is not allowed in demonstration mode"
+  },
+  "order": {
+    "notFound": "order not found"
   }
 }

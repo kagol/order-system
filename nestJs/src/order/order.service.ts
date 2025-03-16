@@ -34,13 +34,14 @@ export class OrderService {
                 HttpStatus.BAD_REQUEST
             );
         }
-        const { name, desc, cost, orderImage } = body;
+        const { name, desc, cost, orderImage, shopName } = body;
         const order = this.order.create({
             name,
             desc,
             cost,
             creator: user,
-            img: orderImage
+            img: orderImage,
+            shopName
         })
         const newOrder = await this.order.save(order)
         return await this.getOrderInfo(newOrder.id)
@@ -49,7 +50,7 @@ export class OrderService {
         body: UpdateOrder,
         id: number
     ) {
-        const { name, desc, cost, orderImage, isDel, reason } = body;
+        const { name, desc, cost, orderImage, isDel, reason, shopName } = body;
         const order = await this.getOrderInfo(id);
         if (isDel !== undefined) {
             order.isDel = isDel;
@@ -66,6 +67,9 @@ export class OrderService {
         }
         if (cost !== undefined) {
             order.cost = cost;
+        }
+        if (shopName) {
+            order.shopName = shopName;
         }
         return this.order.save(order);
     }
@@ -96,7 +100,7 @@ export class OrderService {
                 }
             }
         })
-        if (!order) {
+        if (!order || order.isDel) {
             throw new HttpException(
                 this.i18n.translate('exception.order.notFound', {
                     lang: I18nContext.current().lang,
@@ -157,11 +161,11 @@ export class OrderService {
             },
             where: [
                 {
-                    // isDel: false, // 如果不需要展示被删除的订单，请同时取消 160,164 两行注释
+                    isDel: false,
                     name: filter ? Like(`%${filter}%`) : undefined,
                 },
                 {
-                    // isDel: false, // 如果不需要展示被删除的订单，请同时取消 160,164 两行注释
+                    isDel: false,
                     orderId: filter ? Like(`%${filter}%`) : undefined,
                 }
             ]

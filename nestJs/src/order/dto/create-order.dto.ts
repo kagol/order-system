@@ -10,6 +10,8 @@ export class CreateOrder {
     @IsNotEmpty()
     @IsString()
     orderImage: string;
+    @IsString()
+    shopName: string;
     @IsNumber()
     cost: number;
 }
