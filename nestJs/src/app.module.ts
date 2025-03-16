@@ -161,9 +161,6 @@ export class AppModule implements OnModuleInit {
         );
       }
     }
-    for (const order of InitOrder) {
-      await this.order.createOrder(order, 'admin@no-reply.com');
-    }
     // TODO Menu
     try {
       for (const item of menuData) {
@@ -207,6 +204,10 @@ export class AppModule implements OnModuleInit {
       },
       isInit
     );
+    // 等待用户创建完毕后再创建order
+    for (const order of InitOrder) {
+      await this.order.createOrder(order, 'admin@no-reply.com');
+    }
     Logger.log(`[APP]: create admin user success`);
     Logger.log(`[APP]: email: ${user.email}`);
     Logger.log(`[APP]: password: 'admin'`);
