@@ -16,8 +16,12 @@ export class OrderController {
 
   @Get('/')
   @Permission('order::list')
-  getOrder(@Query('page', ParseIntPipe) page: number, @Query('size', ParseIntPipe) size: number) {
-    return this.orderService.getOrderList(page, size);
+  getOrder(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('size', ParseIntPipe) size: number,
+    @Query('filter') filter?: string
+  ) {
+    return this.orderService.getOrderList(page, size, filter);
   }
 
   @Get('/:id')

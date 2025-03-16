@@ -10,6 +10,7 @@ import { Order } from '@app/models/order';
     TypeOrmModule.forFeature([User, Order])
   ],
   controllers: [OrderController],
-  providers: [OrderService]
+  providers: [OrderService],
+  exports: [OrderService]
 })
 export class OrderModule { }

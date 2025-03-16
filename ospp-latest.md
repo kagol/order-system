@@ -39,6 +39,13 @@ GET /order
 |---|---|---|---|---|
 |page|query|number| 否 |第几页|
 |size|query|number| 否 |页大小|
+|filter|query|string| 否 |筛选逻辑. 将会模糊搜索符合的商品. 会同时模糊搜索name和orderId两个字段, mysql语句如下|
+
+#### 详细说明
+
+**filter**: 筛选逻辑. 将会模糊搜索符合的商品. 会同时模糊搜索name和orderId两个字段, mysql语句如下
+
+where name like '%filter%' or orderId like '%filter%'
 
 > 返回示例
 
@@ -306,7 +313,8 @@ POST /order
   "name": "string",
   "desc": "string",
   "orderImage": "string",
-  "cost": 0
+  "cost": 0,
+  "shopName": "string"
 }
 ```
 
@@ -319,6 +327,7 @@ POST /order
 |» desc|body|string| 是 | 订单简介|none|
 |» orderImage|body|string| 是 | 订单图|none|
 |» cost|body|number| 是 | 价格|none|
+|» shopName|body|string| 是 | 商家名|none|
 
 > 返回示例
 
@@ -386,6 +395,7 @@ POST /order
 |» reason|string¦null|false|none|删除理由|none|
 |» createAt|string|true|none|创建时间|none|
 |» updateAt|string|true|none|修改时间|none|
+|» shopName|string|true|none|商家名|none|
 |» creator|object|true|none|创建者|none|
 |»» id|integer|true|none||none|
 |»» name|string|true|none||none|

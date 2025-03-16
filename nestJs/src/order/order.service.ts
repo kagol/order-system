@@ -2,7 +2,7 @@ import { User } from '@app/models';
 import { Order } from '@app/models/order';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { And, Like, Or, Repository } from 'typeorm';
 import { CreateOrder } from './dto/create-order.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '../.generate/i18n.generated';
@@ -34,13 +34,14 @@ export class OrderService {
                 HttpStatus.BAD_REQUEST
             );
         }
-        const { name, desc, cost, orderImage } = body;
+        const { name, desc, cost, orderImage, shopName } = body;
         const order = this.order.create({
             name,
             desc,
             cost,
             creator: user,
-            img: orderImage
+            img: orderImage,
+            shopName
         })
         const newOrder = await this.order.save(order)
         return await this.getOrderInfo(newOrder.id)
@@ -49,7 +50,7 @@ export class OrderService {
         body: UpdateOrder,
         id: number
     ) {
-        const { name, desc, cost, orderImage, isDel, reason } = body;
+        const { name, desc, cost, orderImage, isDel, reason, shopName } = body;
         const order = await this.getOrderInfo(id);
         if (isDel !== undefined) {
             order.isDel = isDel;
@@ -66,6 +67,9 @@ export class OrderService {
         }
         if (cost !== undefined) {
             order.cost = cost;
+        }
+        if (shopName) {
+            order.shopName = shopName;
         }
         return this.order.save(order);
     }
@@ -96,7 +100,7 @@ export class OrderService {
                 }
             }
         })
-        if (!order) {
+        if (!order || order.isDel) {
             throw new HttpException(
                 this.i18n.translate('exception.order.notFound', {
                     lang: I18nContext.current().lang,
@@ -115,10 +119,23 @@ export class OrderService {
     async getOrderList(
         page: number,
         size: number,
+        filter?: string
     ) {
-        const total = await this.order.count();
+        const total = await this.order.count({
+            where: [
+                {
+                    isDel: false,
+                    name: filter ? Like(`%${filter}%`) : undefined,
+                },
+                {
+                    isDel: false,
+                    orderId: filter ? Like(`%${filter}%`) : undefined,
+                }
+            ]
+        });
+
         const items = await this.order.find({
-            skip: (page - 1) * size,
+            skip: (Math.max(page, 1) - 1) * size,
             take: size,
             select: {
                 name: true,
@@ -142,6 +159,16 @@ export class OrderService {
                     role: true
                 }
             },
+            where: [
+                {
+                    isDel: false,
+                    name: filter ? Like(`%${filter}%`) : undefined,
+                },
+                {
+                    isDel: false,
+                    orderId: filter ? Like(`%${filter}%`) : undefined,
+                }
+            ]
         })
         return {
             items,

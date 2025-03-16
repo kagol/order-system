@@ -36,6 +36,8 @@ import { MockModule } from './mock/mock.module';
 import { RejectRequestGuard } from './public/reject.guard';
 import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import InitOrder from './order/init';
+import { OrderService } from './order/order.service';
 
 @Module({
   imports: [
@@ -83,7 +85,8 @@ export class AppModule implements OnModuleInit {
     private permission: PermissionService,
     private menu: MenuService,
     private lang: I18LangService,
-    private i18: I18Service
+    private i18: I18Service,
+    private order: OrderService
   ) { }
   async onModuleInit() {
     const ROOT = __dirname;
@@ -126,7 +129,7 @@ export class AppModule implements OnModuleInit {
       menu: ['add', 'remove', 'update', 'query'],
       i18n: ['add', 'remove', 'update', 'query'],
       lang: ['add', 'remove', 'update', 'query'],
-      order: ['list', 'query', 'create', 'update']
+      order: ['list', 'query', 'create', 'update', 'remove']
     };
     const tasks = [];
     let permission;
@@ -157,6 +160,9 @@ export class AppModule implements OnModuleInit {
           )
         );
       }
+    }
+    for (const order of InitOrder) {
+      await this.order.createOrder(order, 'admin@no-reply.com');
     }
     // TODO Menu
     try {

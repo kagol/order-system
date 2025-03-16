@@ -26,6 +26,8 @@ export class Order {
     createAt: Date;
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updateAt: Date;
+    @Column({ type: 'text' })
+    shopName: string;
     @BeforeInsert()
     beforeInsert() {
         this.orderId = v1();
