@@ -1,1 +1,10 @@
 @import 'tailwindcss';
+
+/* 修复 tailwindcss 样式覆盖问题 */
+.container {
+  max-width: initial !important;
+}
+
+.table {
+  display: initial !important;
+}
