@@ -11,4 +11,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [DbService],
   exports: [DbService],
 })
-export class DbModule {}
+export class DbModule { }

@@ -16,7 +16,7 @@ import { Reject } from '../public/reject.decorator';
 
 @Controller('menu')
 export class MenuController {
-  constructor(private readonly menuService: MenuService) {}
+  constructor(private readonly menuService: MenuService) { }
 
   @Get('/role/:email')
   async getMenus(@Param('email') email: string) {
