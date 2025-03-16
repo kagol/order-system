@@ -1,28 +1,28 @@
 <template>
   <div class="flex mt-[12px] mb-[12px]">
-    <tiny-search v-model="keyword" placeholder="商品标题/订单号/店铺名" class="!w-[222px] !mr-[8px]"></tiny-search>
+    <tiny-search @search="search" is-enter-search clearable @clear="clear" placeholder="商品标题/订单号/店铺名" class="!w-[222px] !mr-[8px]"></tiny-search>
     <tiny-button>筛选<tiny-icon-chevron-down></tiny-icon-chevron-down></tiny-button>
     <tiny-button :icon="TinyIconDownload">导出订单</tiny-button>
   </div>
   <div class="overflow-auto h-[calc(100vh-280px)]">
-    <tiny-grid :fetch-data="fetchData" :highlight-hover-row="false">
+    <tiny-grid :fetch-data="fetchData" :highlight-hover-row="false" ref="gridRef">
       <tiny-grid-column field="orderInfo" title="订单信息">
         <template #default="{ row }">
           <div class="flex items-center mt-[16px] mb-[16px]">
-            <span>{{ row.date }}</span>
+            <span>{{ row.createAt }}</span>
             <tiny-divider direction="vertical"></tiny-divider>
-            <span>订单号: {{ row.id }}</span>
+            <span>订单号: {{ row.orderId }}</span>
             <tiny-divider direction="vertical"></tiny-divider>
-            <img :src="row.shopImage" :alt="row.shopName" class="w-[26px]! h-[12px]! mr-[4px]">
+            <img :src="'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png'" :alt="row.shopName" class="w-[26px]! h-[12px]! mr-[4px]">
             <tiny-link href="https://opentiny.design/tiny-vue" :underline="false" class="mr-[4px]">{{ row.shopName }}</tiny-link>
             <a href="https://opentiny.design/tiny-vue" target="_blank" class="order-wangwang no-underline w-[20px] h-[20px] inline-block align-text-bottom mr-[4px]"></a>
             <tiny-link href="https://opentiny.design/tiny-vue" :underline="false">订单详情<tiny-icon-angle-right></tiny-icon-angle-right></tiny-link>
           </div>
           <div class="flex flex-row">
-            <img :src="row.image" :alt="row.orderInfo" class="rounded-[8px] w-[96px] h-[96px] mr-[12px]">
+            <img :src="row.img" :alt="row.name" class="rounded-[8px] w-[96px] h-[96px] mr-[12px]">
             <div>
-              <h3 class="mb-[4px] leading-[22px]">{{ row.orderInfo }}</h3>
-              <p class="text-[#7a7a7a] mb-[4px] leading-[22px]">{{ row.description }}</p>
+              <h3 class="mb-[4px] leading-[22px]">{{ row.name }}</h3>
+              <p class="text-[#7a7a7a] mb-[4px] leading-[22px]">{{ row.desc }}</p>
               <div>
                 <tiny-button>退换</tiny-button>
                 <tiny-button>加入购物车</tiny-button>
@@ -33,8 +33,8 @@
       </tiny-grid-column>
       <tiny-grid-column field="goodsAmount" title="商品金额" width="160px">
         <template #default="{ row }">
-          <tiny-statistic prefix="￥" :value="row.goodsAmount"></tiny-statistic>
-          x{{ row.goodsQuantity }}
+          <tiny-statistic prefix="￥" :value="row.cost"></tiny-statistic>
+          x{{ row.goodsQuantity || 1 }}
         </template>
       </tiny-grid-column>
       <tiny-grid-column field="disbursements" title="实付款" width="160px">
@@ -50,12 +50,24 @@
         title="操作列"
         width="120px"
       >
-        <template #default>
+        <template #default="{ row }">
           <div class="flex flex-col">
             <tiny-button type="primary">再买一单</tiny-button>
             <tiny-button type="text">加入购物车</tiny-button>
             <tiny-button type="text">申请开票</tiny-button>
-            <tiny-button type="text">删除订单</tiny-button>
+            <tiny-popconfirm
+              title="是否确认删除"
+              message="删除后不可恢复，确定要删除本订单吗？"
+              type="warning"
+              trigger="click"
+              class="pl-[20px]"
+              @confirm="deleteOrder({
+                id: row.id
+              })">
+              <template #reference>
+                <tiny-button type="text">删除订单</tiny-button>
+              </template>
+            </tiny-popconfirm>
           </div>
         </template>
       </tiny-grid-column>
@@ -73,17 +85,16 @@
 </template>
 
 <script setup>
-import { TinyGrid, TinyGridColumn, TinySearch, TinyButton, TinyPager, TinyStatistic, TinyTag, TinyLink, TinyDivider } from '@opentiny/vue'
+import { TinyGrid, TinyGridColumn, TinySearch, TinyButton, TinyPager, TinyStatistic, TinyTag, TinyLink, TinyDivider, TinyPopconfirm } from '@opentiny/vue'
 import { iconDownload, iconChevronDown, iconAngleRight } from '@opentiny/vue-icon'
-import { reactive, ref } from 'vue'
-import { getOrderList } from '@/api/order'
-import { orderList } from './order-list'
+import { reactive, ref, watch } from 'vue'
+import { getOrderList, deleteOrder } from '@/api/order'
+
+const gridRef = ref()
 
 const TinyIconDownload = iconDownload()
 const TinyIconChevronDown = iconChevronDown()
 const TinyIconAngleRight = iconAngleRight()
-
-const keyword = ref('')
 
 const pagerConfig = ref({
   currentPage: 1,
@@ -101,19 +112,31 @@ function sizeChange(size) {
   // fetchData()
 }
 
-// let tableData = reactive(orderList)
-
-const getData = async () => {
-  let { data } = await getOrderList({
+const getData = async ({ filterArgs }) => {
+  const params = {
     page: 1,
-    size: 10
-  });
+    size: 10,
+  }
+  if (filterArgs) {
+    params.filter = filterArgs
+  }
+  let { data } = await getOrderList(params);
   return data.items
 }
 
 const fetchData = ref({
   api: getData
 })
+
+const search = (key, val) => {
+  fetchData.value.args = { filterArgs: val }
+  gridRef.value.handleFetch()
+}
+
+const clear = () => {
+  fetchData.value.args = { filterArgs: '' }
+  gridRef.value.handleFetch()
+}
 </script>
 
 <style lang="less">

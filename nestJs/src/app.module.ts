@@ -97,7 +97,7 @@ export class AppModule implements OnModuleInit {
     const LOCK_FILE = join(data, 'lock');
     if (existsSync(LOCK_FILE)) {
       Logger.warn(
-        'Lock file exists, if you want init agin, please remove dist or dist/lock'
+        'Lock file exists, if you want init again, please remove dist or dist/lock'
       );
       return;
     }
