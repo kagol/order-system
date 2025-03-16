@@ -610,6 +610,8 @@
     "code": "zh-CN",
     "yes": "是",
     "no": "否",
+    "menu.myOrder": "我的订单",
+    "menu.myOrder.bought": "已买到的宝贝",
     "menu.board": "看板",
     "menu.home": "监控页",
     "menu.work": "工作台",
