@@ -5,7 +5,7 @@
     <tiny-button :icon="TinyIconDownload">导出订单</tiny-button>
   </div>
   <div class="overflow-auto h-[calc(100vh-280px)]">
-    <tiny-grid :data="tableData" :highlight-hover-row="false">
+    <tiny-grid :fetch-data="fetchData" :highlight-hover-row="false">
       <tiny-grid-column field="orderInfo" title="订单信息">
         <template #default="{ row }">
           <div class="flex items-center mt-[16px] mb-[16px]">
@@ -76,6 +76,8 @@
 import { TinyGrid, TinyGridColumn, TinySearch, TinyButton, TinyPager, TinyStatistic, TinyTag, TinyLink, TinyDivider } from '@opentiny/vue'
 import { iconDownload, iconChevronDown, iconAngleRight } from '@opentiny/vue-icon'
 import { reactive, ref } from 'vue'
+import { getOrderList } from '@/api/order'
+import { orderList } from './order-list'
 
 const TinyIconDownload = iconDownload()
 const TinyIconChevronDown = iconChevronDown()
@@ -99,104 +101,19 @@ function sizeChange(size) {
   // fetchData()
 }
 
-const tableData = reactive([
-  {
-    id: crypto.randomUUID(),
-    orderInfo: 'Apple/苹果 Mac mini 电脑主机',
-    image: 'https://img.alicdn.com/bao/uploaded/i4/2200671859633/O1CN01uWpol92L1yJiqvGIg_!!4611686018427384753-0-item_pic.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 800,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 800,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '【国家补贴】华为MateBook D16 2024笔记本',
-    image: 'https://img.alicdn.com/bao/uploaded/i3/2212851181725/O1CN01IfJFwl1Oc66EC00rV_!!0-item_pic.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 300,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 300,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '便签台历2025年新款日历记事本创意简约商务',
-    image: 'https://img.alicdn.com/bao/uploaded/i2/4560622923/O1CN01tQ06cG1XSmfL433Ep_!!0-saturn_solar.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 1300,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 1300,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '室靠垫座椅工位久坐神器腰托靠枕靠背垫腰部支撑腰垫护腰',
-    image: 'https://img.alicdn.com/bao/uploaded/i2/2214917952491/O1CN01HNjXQk1UGvZim8EvE_!!0-item_pic.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 360,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 360,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '美的电吹风机家用大风力负离子护发快干大功率风筒折叠宿舍用学生',
-    image: 'https://img.alicdn.com/imgextra/i2/2217293179005/O1CN01pwssID2GOLbcSmDjW_!!2217293179005-0-alimamacc.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 810,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 810,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '小米烧水壶家用大容量电热水壶米家保温热水壶不锈钢泡茶开水壶',
-    image: 'https://img.alicdn.com/bao/uploaded/i1/2217728271973/O1CN01RWUAec1QRgNse8RCb_!!2-item_pic.png',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 800,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 800,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '比比赞素大刀肉辣条8090后儿时怀旧解馋小零食休闲',
-    image: 'https://img.alicdn.com/bao/uploaded/i3/704238090/O1CN01J1mGew29dH4gNqwKq_!!0-item_pic.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 400,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 400,
-  },
-  {
-    id: crypto.randomUUID(),
-    orderInfo: '梅干菜饼锅盔梅菜扣肉饼黄山烧饼安徽特产早餐零食',
-    image: 'https://img.alicdn.com/imgextra/i4/2200779546537/O1CN01tS9Jdk1y9zpdxHjuF_!!2200779546537.jpg_200x200.jpg',
-    description: 'Apple/苹果 Mac mini 电脑主机 M1芯片 8核CPU 8核GPU 16核神经网络引擎 8GB内存 256GB固态硬盘',
-    goodsAmount: 540,
-    goodsQuantity: 1,
-    shopName: 'Apple官方旗舰店',
-    date: '2021-09-01',
-    shopImage: 'https://gw.alicdn.com/imgextra/i3/O1CN018zfJt01Yxl2qy08VF_!!6000000003126-2-tps-77-36.png',
-    disbursements: 540
-  }
-])
+// let tableData = reactive(orderList)
+
+const getData = async () => {
+  let { data } = await getOrderList({
+    page: 1,
+    size: 10
+  });
+  return data.items
+}
+
+const fetchData = ref({
+  api: getData
+})
 </script>
 
 <style lang="less">

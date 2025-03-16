@@ -66,10 +66,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: RejectRequestGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RejectRequestGuard,
+    // },
     {
       provide: APP_GUARD,
       useClass: PermissionGuard,
