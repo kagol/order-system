@@ -1,5 +1,5 @@
 ---
-title: ospp-latest v1.0.0
+title: order-system v1.0.0
 language_tabs:
   - shell: Shell
   - http: HTTP
@@ -19,7 +19,7 @@ generator: "@tarslib/widdershins v4.0.17"
 
 ---
 
-# ospp-latest
+# order-system
 
 > v1.0.0
 
