@@ -225,6 +225,6 @@ export class AppModule implements OnModuleInit {
     Logger.log(`[APP]: email: ${user.email}`);
     Logger.log(`[APP]: password: 'admin'`);
     Logger.log('Enjoy!');
-    // writeFileSync(LOCK_FILE, '');
+    writeFileSync(LOCK_FILE, '');
   }
 }
