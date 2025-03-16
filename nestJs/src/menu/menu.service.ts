@@ -133,6 +133,7 @@ export class MenuService {
       menu[28].parentId = menuId[25];
       menu[29].parentId = menuId[25];
       menu[30].parentId = menuId[25];
+      menu[33].parentId = menuId[32];
     }
     for (const item of menu) {
       await this.menu.update(item.id, { parentId: item.parentId });
