@@ -6,6 +6,7 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { I18nTranslations } from '../.generate/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { MenuNode, root } from './init/data';
 
 export interface ITreeNodeData {
   // node-key='id' 设置节点的唯一标识
@@ -76,7 +77,7 @@ export class MenuService {
     @InjectRepository(Menu)
     private menu: Repository<Menu>,
     private readonly i18n: I18nService<I18nTranslations>
-  ) {}
+  ) { }
   async findRoleMenu(email: string) {
     const userInfo = await this.user
       .createQueryBuilder('user')
@@ -100,45 +101,37 @@ export class MenuService {
     return convertToTree(await menu);
   }
 
+  async initMenu() {
+    const dfs = async (node: MenuNode, parentId: string | null) => {
+      const parent = await this.menu.save({
+        name: node.name,
+        order: node.order,
+        menuType: node.menuType,
+        icon: node.icon,
+        component: node.component,
+        path: node.path,
+        locale: node.locale,
+        parentId: parentId ? Number.parseInt(parentId) : null
+      })
+      if (!node.children) {
+        return;
+      }
+      for (const child of node.children) {
+        await dfs(child, parent.id.toString());
+      }
+    }
+    for (const node of root) {
+      await dfs(node, null);
+    }
+
+  }
+
   async getMenuAllId() {
     const menu = await this.menu.find();
     for (const item of menu) {
       this.menuId.push(item.id);
     }
-    await this.handleMenuParentId(this.menuId);
     return this.menuId;
-  }
-
-  async handleMenuParentId(menuId: number[]) {
-    const menu = await this.menu.find();
-    if (menu) {
-      menu[1].parentId = menuId[0];
-      menu[2].parentId = menuId[0];
-      menu[4].parentId = menuId[3];
-      menu[6].parentId = menuId[5];
-      menu[7].parentId = menuId[5];
-      menu[9].parentId = menuId[8];
-      menu[11].parentId = menuId[10];
-      menu[12].parentId = menuId[10];
-      menu[14].parentId = menuId[13];
-      menu[15].parentId = menuId[13];
-      menu[16].parentId = menuId[13];
-      menu[18].parentId = menuId[17];
-      menu[20].parentId = menuId[19];
-      menu[21].parentId = menuId[19];
-      menu[23].parentId = menuId[22];
-      menu[24].parentId = menuId[23];
-      menu[26].parentId = menuId[25];
-      menu[27].parentId = menuId[25];
-      menu[28].parentId = menuId[25];
-      menu[29].parentId = menuId[25];
-      menu[30].parentId = menuId[25];
-      menu[33].parentId = menuId[32];
-      menu[34].parentId = menuId[32];
-    }
-    for (const item of menu) {
-      await this.menu.update(item.id, { parentId: item.parentId });
-    }
   }
 
   async createMenu(dto: CreateMenuDto, isInit: boolean) {

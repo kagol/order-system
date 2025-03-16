@@ -20,10 +20,9 @@ import { UserService } from './user/user.service';
 import { RoleService } from './role/role.service';
 import { PermissionService } from './permission/permission.service';
 import { MenuService } from './menu/menu.service';
-import { Permission } from '@app/models';
+import { I18, Lang, Permission } from '@app/models';
 import { MenuModule } from './menu/menu.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { menuData } from './menu/init/menuData';
 import { I18Module } from './i18/i18.module';
 import { I18LangService } from './i18/lang.service';
 import { I18Service } from './i18/i18.service';
@@ -38,6 +37,8 @@ import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import InitOrder from './order/init';
 import { OrderService } from './order/order.service';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { OrderService } from './order/order.service';
     }),
     MockModule,
     OrderModule,
+    TypeOrmModule.forFeature([Lang, I18]),
   ],
   providers: [
     {
@@ -86,7 +88,9 @@ export class AppModule implements OnModuleInit {
     private menu: MenuService,
     private lang: I18LangService,
     private i18: I18Service,
-    private order: OrderService
+    private order: OrderService,
+    @InjectRepository(Lang) private langRep: Repository<Lang>,
+    @InjectRepository(I18) private i18Rep: Repository<I18>,
   ) { }
   async onModuleInit() {
     const ROOT = __dirname;
@@ -105,21 +109,32 @@ export class AppModule implements OnModuleInit {
     const I18_INIT_FILE = JSON.parse(
       readFileSync(I18_INIT_FILE_PATH).toString()
     );
-    const dbLangNames = (await this.lang.findAll()).map((lang) => lang.name);
-    const langs = Object.keys(I18_INIT_FILE).filter(
-      (key) => !dbLangNames.includes(key)
-    );
-    for (const name of langs) {
-      const { id } = await this.lang.create({ name });
-      for (const [key, value] of Object.entries(I18_INIT_FILE[name])) {
-        const dbValue = await this.i18.has(key, id);
+    const langs = Object.keys(I18_INIT_FILE);
+    for (const lang of langs) {
+      let langObj = await this.langRep.findOneBy({
+        name: lang
+      })
+      if (!langObj) {
+        langObj = await this.lang.create({ name: lang });
+      }
+      for (const [k, v] of Object.entries(I18_INIT_FILE[lang])) {
+        const dbValue = await this.i18Rep.findOne({
+          where: {
+            key: k,
+            lang: {
+              name: lang
+            }
+          }
+        })
         if (dbValue) {
-          Logger.warn(`${name} - ${key} exists value is ${dbValue.content}`);
           continue;
         }
-        Logger.log(`${name} - ${key} not exists`);
-        await this.i18.create({ key, content: value as string, lang: id });
-        Logger.log(`${name} - ${key} save success`);
+        const i18 = this.i18Rep.create({
+          lang: langObj,
+          key: k,
+          content: v as string
+        })
+        await this.i18Rep.save(i18);
       }
     }
     const permissions = {
@@ -163,9 +178,7 @@ export class AppModule implements OnModuleInit {
     }
     // TODO Menu
     try {
-      for (const item of menuData) {
-        await this.menu.createMenu(item, isInit);
-      }
+      await this.menu.initMenu();
     } catch (e) {
       const err = e as HttpException;
       Logger.error(err.message);
