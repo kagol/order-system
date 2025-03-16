@@ -104,23 +104,26 @@ const pagerConfig = ref({
 
 function currentChange(current) {
   pagerConfig.value.currentPage = current
-  // fetchData()
+
+  fetchData.value.args = { page: { currentPage: current } }
+  gridRef.value.handleFetch()
 }
 
 function sizeChange(size) {
   pagerConfig.value.pageSize = size
-  // fetchData()
+
+  fetchData.value.args = { page: { pageSize: size } }
+  gridRef.value.handleFetch()
 }
 
-const getData = async ({ filterArgs }) => {
+const getData = async ({ filterArgs, page }) => {
   const params = {
-    page: 1,
-    size: 10,
-  }
-  if (filterArgs) {
-    params.filter = filterArgs
+    page: page?.currentPage || 1,
+    size: page?.pageSize || 10,
+    filter: filterArgs,
   }
   let { data } = await getOrderList(params);
+  pagerConfig.value.total = data.total;
   return data.items
 }
 
