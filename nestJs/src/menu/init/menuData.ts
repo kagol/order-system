@@ -309,4 +309,24 @@ export const menuData = [
     path: 'locale',
     locale: 'menu.i18n',
   },
+  {
+    name: 'MyOrder',
+    order: 0,
+    parentId: null,
+    menuType: 'normal',
+    icon: 'IconPurchasePlannedOrder',
+    component: 'order/index',
+    path: 'order',
+    locale: 'menu.myOrder',
+  },
+  {
+    name: 'Bought',
+    order: 0,
+    parentId: null,
+    menuType: 'normal',
+    icon: 'IconDiscountSup',
+    component: 'order/bought/index',
+    path: 'bought',
+    locale: 'menu.myOrder.bought',
+  }
 ];
