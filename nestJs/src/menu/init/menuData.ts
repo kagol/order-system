@@ -328,5 +328,15 @@ export const menuData = [
     component: 'order/bought/index',
     path: 'bought',
     locale: 'menu.myOrder.bought',
+  },
+  {
+    name: 'CreateOrder',
+    order: 1,
+    parentId: null,
+    menuType: 'normal',
+    icon: 'IconAdd',
+    component: 'order/create/index',
+    path: 'order/create',
+    locale: 'menu.myOrder.create',
   }
 ];
