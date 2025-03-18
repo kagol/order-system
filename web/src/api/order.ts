@@ -14,3 +14,9 @@ export function deleteOrder(params) {
 export function createOrder(params) {
   return axios.post(`/api/order`, params)
 }
+
+export function uploadOrderImage(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return axios.post('/api/order/upload', formData)
+}

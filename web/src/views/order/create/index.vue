@@ -14,8 +14,7 @@
     </tiny-form-item>
     <tiny-form-item label="商品图片" prop="orderImage">
 
-      <!-- FIXME: CORS -->
-      <tiny-file-upload action="http://localhost:3000/api/order/upload">
+      <tiny-file-upload :http-request="uploadImage" action="http://localhost:3000/api/order/upload">
         <template #trigger>
           <tiny-button>点击上传</tiny-button>
         </template>
@@ -41,7 +40,7 @@ import {
   TinyNumeric,
   TinyFileUpload
 } from '@opentiny/vue'
-import { createOrder } from '@/api/order'
+import { createOrder, uploadOrderImage } from '@/api/order'
 
 const ruleFormRef = ref()
 
@@ -55,6 +54,13 @@ const createData = reactive({
 
 const handleSubmit = async () => {
   await createOrder(createData)
+}
+const uploadImage = ({onSuccess, file}) => {
+  return uploadOrderImage(file)
+  .then((resp) => {
+    createData.orderImage = `/api/${resp.data}`;
+  })
+  .catch(console.error);
 }
 
 function resetForm() {
