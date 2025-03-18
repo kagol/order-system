@@ -13,7 +13,9 @@
       <tiny-input v-model="createData.shopName"></tiny-input>
     </tiny-form-item>
     <tiny-form-item label="商品图片" prop="orderImage">
-      <tiny-file-upload action="http://xxx">
+
+      <!-- FIXME: CORS -->
+      <tiny-file-upload action="http://localhost:3000/api/order/upload">
         <template #trigger>
           <tiny-button>点击上传</tiny-button>
         </template>
