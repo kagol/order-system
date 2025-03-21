@@ -32,7 +32,6 @@
         label-position="right"
         label-width="100px"
         class="filter-form"
-        size="small"
       >
         <transition-fade-slide-group>
           <tiny-row :flex="true" justify="center" class="col">
