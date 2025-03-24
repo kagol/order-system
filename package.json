@@ -1,0 +1,8 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -F web start",
+    "dev:backend": "pnpm -F backend start"
+  }
+}
