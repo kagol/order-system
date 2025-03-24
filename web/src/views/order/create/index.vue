@@ -24,7 +24,7 @@
       <tiny-button type="primary" @click="handleSubmit()">
         提交
       </tiny-button>
-      <tiny-button @click="resetForm">重置表单</tiny-button>
+      <tiny-button @click="resetForm">重置</tiny-button>
     </tiny-form-item>
   </tiny-form>
 </template>
@@ -38,7 +38,8 @@ import {
   TinyButton,
   TinyModal,
   TinyNumeric,
-  TinyFileUpload
+  TinyFileUpload,
+  Notify,
 } from '@opentiny/vue'
 import { createOrder, uploadOrderImage } from '@/api/order'
 
@@ -53,7 +54,20 @@ const createData = reactive({
 })
 
 const handleSubmit = async () => {
-  await createOrder(createData)
+  try {
+    await createOrder(createData)
+    Notify({
+      type: 'success',
+      message: '创建成功！',
+      position: 'top-right'
+    })
+  } catch (error) {
+    Notify({
+      type: 'error',
+      message: `创建失败！${error}`,
+      position: 'top-right'
+    })
+  }
 }
 const uploadImage = ({onSuccess, file}) => {
   return uploadOrderImage(file)
