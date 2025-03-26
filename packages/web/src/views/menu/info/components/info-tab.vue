@@ -264,7 +264,7 @@
       <tiny-modal
         v-model="addModal"
         show-footer
-        :mask-closable="true"
+        :mask-closable="false"
         resize
         :title="$t('menuInfo.modal.title.add')"
         @close="onAddMenuClose"
@@ -288,7 +288,7 @@
         v-if="!readonly"
         v-model="updateModal"
         show-footer
-        :mask-closable="true"
+        :mask-closable="false"
         resize
         :title="$t('menuInfo.modal.title.update')"
         @close="onClose"
@@ -319,7 +319,7 @@
         v-if="readonly"
         v-model="updateModal"
         show-footer
-        :mask-closable="true"
+        :mask-closable="false"
         resize
         :title="$t('menuInfo.modal.title.info')"
         @close="onClose"
