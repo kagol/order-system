@@ -81,6 +81,8 @@
     }
 
     &-logo {
+      display: flex;
+      align-items: center;
       margin-right: 20px;
 
       &-img {
